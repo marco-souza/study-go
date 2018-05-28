@@ -2,19 +2,43 @@ package main
 
 import (
 	"fmt"
+	"html"
+	"log"
+	"net/http"
 
 	"github.com/zserge/webview"
 )
 
 func main() {
+	// Define port
+	port := ":8071"
+
+	// Start server
+	startServer(port)
+
+	// Start window
+	startClient(port)
+}
+
+func startServer(port string) {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello motherfucker, %q", html.EscapeString(r.URL.Path))
+	})
+
+	// start server
+	go func() {
+		log.Fatal(http.ListenAndServe(port, nil))
+	}()
+}
+
+func startClient(port string) {
+	// Set variables
 	title := "Minimal webview example"
 	width, height := size("fullhd")
 	resizable := true
-	url := "https://google.com"
+	ip := "127.0.0.1"
+	url := "http://" + ip + port
 
-	fmt.Println(height, width)
-
-	// Open wikipedia in a 800x600 resizable window
 	webview.Open(title, url, width, height, resizable)
 }
 
