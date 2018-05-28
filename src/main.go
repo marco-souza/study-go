@@ -21,9 +21,7 @@ func main() {
 }
 
 func startServer(port string) {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello motherfucker, %q", html.EscapeString(r.URL.Path))
-	})
+	http.HandleFunc("/", rootHandler)
 
 	// start server
 	go func() {
@@ -53,4 +51,8 @@ func size(format string) (int, int) {
 	default:
 		return 800, 600
 	}
+}
+
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello motherfucker, %q", html.EscapeString(r.URL.Path))
 }
